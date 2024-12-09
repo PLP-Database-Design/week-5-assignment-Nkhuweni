@@ -28,14 +28,75 @@ This demonstrates the cconnection of MySQL database and Node.js to create a simp
    
    // Question 1 goes here
 
+   // GET endpoint to retrieve all patients
+app.get('/patients', (req, res) => {
+  const query = 'SELECT patient_id, first_name, last_name, date_of_birth FROM patients';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error retrieving patients:', err);
+      return res.status(500).json({ error: 'Failed to retrieve patients' });
+    }
+    res.json(results);
+  });
+});
+
+
 
    // Question 2 goes here
+
+   // GET endpoint to retrieve all providers
+app.get('/providers', (req, res) => {
+  const query = 'SELECT first_name, last_name, provider_specialty FROM providers';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error retrieving providers:', err);
+      return res.status(500).json({ error: 'Failed to retrieve providers' });
+    }
+    res.json(results);
+  });
+});
+
 
 
    // Question 3 goes here
 
+   // GET endpoint to retrieve patients by their first name
+app.get('/patients/:first_name', (req, res) => {
+  const { first_name } = req.params; // Extract first_name from the request parameters
+  const query = 'SELECT patient_id, first_name, last_name, date_of_birth FROM patients WHERE first_name = ?';
+
+  db.query(query, [first_name], (err, results) => {
+    if (err) {
+      console.error('Error retrieving patients by first name:', err);
+      return res.status(500).json({ error: 'Failed to retrieve patients' });
+    }
+    res.json(results);
+  });
+});
+
+
 
    // Question 4 goes here
+
+   // GET endpoint to retrieve providers by their specialty
+app.get('/providers/specialty/:specialty', (req, res) => {
+  const { specialty } = req.params; // Extract the specialty from the route parameter
+  const query = 'SELECT first_name, last_name, provider_specialty FROM providers WHERE provider_specialty = ?';
+
+  db.query(query, [specialty], (err, results) => {
+    if (err) {
+      console.error('Error retrieving providers by specialty:', err);
+      return res.status(500).json({ error: 'Failed to retrieve providers' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No providers found for this specialty' });
+    }
+    res.json(results);
+  });
+});
+
 
    
 
@@ -87,6 +148,8 @@ Create a ```GET``` endpoint that displays all providers with their:
 
 ## 3. Filter patients by First Name
 Create a ```GET``` endpoint that retrieves all patients by their first name
+
+
 
 <br>
 
